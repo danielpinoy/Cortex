@@ -1,7 +1,6 @@
 import { CalculatorOutlined } from "@ant-design/icons";
 import { Badge, Card, List } from "antd";
 import { Text } from "../text";
-import { useState } from "react";
 import UpcomingEventsSkeleton from "../skeleton/upcoming-events-skeleton";
 import { getDate } from "../utilities/helpers";
 import { useList } from "@refinedev/core";
@@ -13,16 +12,15 @@ const UpcomingEvents = () => {
     // Data is mockup
     const { data, isLoading } = useList({
         resource: "events",
-        pagination: { pageSize: 5 },
+        pagination: { pageSize: 4 },
         sorters: [{ field: "startDate", order: "asc" }],
         filters: [{ field: "startDate", operator: "gte", value: dayjs().format("YYYY-MM-DD") }],
         meta: { gqlQuery: DASHBORAD_CALENDAR_UPCOMING_EVENTS_QUERY },
     });
+
     return (
         <Card
             style={{ height: "100%" }}
-            headStyle={{ padding: "8px 16px" }}
-            bodyStyle={{ padding: "0 1rem" }}
             title={
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <CalculatorOutlined />
