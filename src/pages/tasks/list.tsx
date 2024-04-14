@@ -4,19 +4,21 @@ import KanbanColumn from "./kanban/column";
 import KanbanItem from "./kanban/item";
 import { useList, useNavigation, useUpdate } from "@refinedev/core";
 import { TASKS_QUERY, TASK_STAGES_QUERY } from "@/graphql/queries";
-import { TaskStage } from "@/graphql/schema.types";
-import { GetFieldsFromList } from "@refinedev/nestjs-query";
-import { TasksQuery } from "@/graphql/types";
+import { TaskStagesQuery, TasksQuery } from "@/graphql/types";
 import ProjectCard, { ProjectCardMemo } from "./kanban/card";
 import { KanbanAddCardButton } from "./kanban/add-card-button";
 import { KanbanColumnSkeleton, ProjectCardSkeleton } from "@/components";
 import { DragEndEvent } from "@dnd-kit/core";
 import { UPDATE_TASK_STAGE_MUTATION } from "@/graphql/mutation";
+import { GetFieldsFromList } from "@refinedev/nestjs-query";
+
+type Task = GetFieldsFromList<TasksQuery>;
+type TaskStage = GetFieldsFromList<TaskStagesQuery> & { tasks: Task[] };
 
 const List = ({ children }: React.PropsWithChildren) => {
     const { replace } = useNavigation();
 
-    const { data: stages, isLoading: isLoadingStages } = useList({
+    const { data: stages, isLoading: isLoadingStages } = useList<TaskStage>({
         resource: "taskStages",
         filters: [
             {
@@ -56,12 +58,11 @@ const List = ({ children }: React.PropsWithChildren) => {
 
     const { mutate: updateTask } = useUpdate();
     const taskStages = React.useMemo(() => {
-        if (!tasks?.data || !stages?.data) {
+        if (!tasks?.data || !stages?.data)
             return {
                 unassignedStage: [],
                 stages: [],
             };
-        }
 
         const unassignedStage = tasks.data.filter((task) => task.stageId === null);
 
@@ -69,7 +70,6 @@ const List = ({ children }: React.PropsWithChildren) => {
             ...stage,
             tasks: tasks.data.filter((task) => task.stageId?.toString() === stage.id),
         }));
-
         return { unassignedStage, columns: grouped };
     }, [stages, tasks]);
 

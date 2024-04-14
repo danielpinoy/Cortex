@@ -13,15 +13,19 @@ import {
     List,
     useTable,
 } from "@refinedev/antd";
-import { useGo, getDefaultFilter } from "@refinedev/core";
+import { useGo, getDefaultFilter, HttpError } from "@refinedev/core";
 import { Input, Pagination, Space, Table } from "antd";
-import { CompaniesListQuery } from "@/graphql/types";
+import { CompaniesListQuery, CompaniesListQueryVariables } from "@/graphql/types";
 import { PaginationTotal } from "@/components/pagination-total";
 
 type Company = GetFieldsFromList<CompaniesListQuery>;
 
 export const CompanyList = ({ children }: React.PropsWithChildren) => {
-    const { tableProps, filters } = useTable({
+    const { tableProps, filters } = useTable<
+        GetFieldsFromList<CompaniesListQuery>,
+        HttpError,
+        GetFieldsFromList<CompaniesListQuery>
+    >({
         resource: "companies",
         onSearch: (values) => {
             return [{ field: "name", operator: "contains", value: values.name }];
