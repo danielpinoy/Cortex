@@ -18,3 +18,12 @@ export {
     DashboardTotalCountCard,
     LatestActivities,
 };
+export * from "./tags/user-tag";
+export * from "./text";
+export * from "./accordion";
+export * from "../pages/tasks/form/description";
+export * from "../pages/tasks/form/due-date";
+export * from "../pages/tasks/form/stage";
+export * from "../pages/tasks/form/title";
+export * from "../pages/tasks/form/users";
+export * from "../pages/tasks/form/header";
